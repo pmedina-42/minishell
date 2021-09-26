@@ -46,6 +46,7 @@ typedef void	(*t_function)(void *, int);
 
 typedef struct s_command
 {
+	int			nbr;
 	char		*cmd;
 	char		*pre_cmd;
 	char		**argv;

@@ -23,7 +23,7 @@ void	builtin_echo(void *data, int pos)
 	sys = (t_system *)data;
 	argv = sys->cmds[pos].argv;
 	i = 1;
-	if (!ft_strcmp(argv[i], "-n"))
+	while (argv[i] && !ft_strcmp(argv[i], "-n"))
 	{
 		has_return = 0;
 		i++;

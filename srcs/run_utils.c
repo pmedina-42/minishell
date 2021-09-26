@@ -12,32 +12,49 @@
 
 #include "../includes/minishell.h"
 
+static t_command	*get_cmd(t_system *sys, int pid)
+{
+	int i;
+
+	i = 0;
+	if (pid > 0)
+	{
+		while (i < sys->nbr_cmds)
+		{
+			if (sys->cmds[i].pid == pid)
+				return (&sys->cmds[i]);
+			i++;
+		}
+	}
+	return (0);
+}
+
 void	wait_process(t_system *sys)
 {
-	int			i;
+	int			pid;
 	int			status;
 	t_command	*cmd;
 	extern int	g_exec_child;
 
-	i = 0;
-	while (i < sys->nbr_cmds)
-	{
-		cmd = &sys->cmds[i];
-		if (cmd->pid > 0)
+	pid = 1;
+	while (pid > 0)
+	{		
+		pid = waitpid(-1, &status, 0);
+		cmd = get_cmd(sys, pid);
+		if (cmd)
 		{
-			waitpid(cmd->pid, &status, 0);
-			if (!i && !WIFEXITED(status) && !cmd->builtin && g_exec_child < 0)
+			if (!cmd->nbr && !WIFEXITED(status) && !cmd->builtin && g_exec_child < 0)
 				printf("Quit: 3\n");
-			else if (WIFEXITED(status) && !sys->error)
-				sys->error_cmd = WEXITSTATUS(status);
-			else if (cmd->error && !sys->error_cmd)
-				sys->error_cmd = 1;
-			else if (!cmd->error)
-				sys->error_cmd = 0;
+			if (cmd->nbr == sys->nbr_cmds - 1)
+			{
+				if (WIFEXITED(status) && !sys->error)
+					sys->error_cmd = WEXITSTATUS(status);
+				else if (cmd->error && !sys->error_cmd)
+					sys->error_cmd = 1;
+				else if (!cmd->error)
+					sys->error_cmd = 0;
+			}
 		}
-		if (cmd->pid_limiter)
-			waitpid(cmd->pid_limiter, &status, 0);
-		i++;
 	}
 }
 
@@ -81,6 +98,7 @@ void	run_limitator(t_system *sys, t_command *cmd)
 {
 	pid_t		pid;
 	extern int	g_exec_child;
+	int			status;
 
 	if (cmd->limiter)
 	{
@@ -97,6 +115,7 @@ void	run_limitator(t_system *sys, t_command *cmd)
 		{
 			close(cmd->fd_lim[WRITE_END]);
 			cmd->pid_limiter = pid;
+			waitpid(pid, &status, 0);
 		}
 	}
 }

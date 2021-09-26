@@ -55,6 +55,7 @@ void	load_cmds(t_system *sys, const char *line)
 	i = 0;
 	while (i < sys->nbr_cmds && line)
 	{
+		sys->cmds[i].nbr = i;
 		line = get_cmd_line(sys, line, &sys->cmds[i]);
 		i++;
 	}

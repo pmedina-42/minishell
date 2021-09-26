@@ -46,15 +46,16 @@ void	find_path(t_system *sys, t_command *cmd)
 	char	*str;
 
 	str = 0;
+	fd = -1;
 	if (cmd->argv && !cmd->builtin)
 	{
 		fd = open(cmd->argv[0], O_RDONLY);
-		if (fd >= 0)
+		if (fd >= 0 && ft_strlen(cmd->argv[0]))
 		{
 			str = cmd->argv[0];
 			cmd->argv[0] = get_app(str);
 		}
-		else
+		else if (ft_strlen(cmd->argv[0]))
 			fd = check_other_path(sys, cmd, &str);
 		if (fd >= 0)
 			cmd->cmd = str;
