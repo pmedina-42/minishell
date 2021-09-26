@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/14 18:11:33 by pmedina-          #+#    #+#             */
-/*   Updated: 2021/09/22 18:06:00 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/09/26 21:12:07 by pmedina-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static t_command	*get_cmd(t_system *sys, int pid)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (pid > 0)
