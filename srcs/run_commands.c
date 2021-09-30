@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 20:01:20 by lgomez-d          #+#    #+#             */
-/*   Updated: 2021/09/21 19:42:48 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/09/28 17:02:26 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ static void	load_in(t_system *sys, int pos)
 	cmd = sys->cmds[pos];
 	if (cmd.limiter && !cmd.file_in)
 	{
-		close(cmd.fd_lim[WRITE_END]);
 		dup2(cmd.fd_lim[READ_END], STDIN_FILENO);
 		close(cmd.fd_lim[READ_END]);
 	}
@@ -88,16 +87,29 @@ static void	run_child(t_system *sys, int pos)
 	exit(0);
 }
 
-static void	close_fds(t_system *sys, int pos, int pid)
+static void	select_process(t_system *sys, int pos, int pid)
 {
-	sys->cmds[pos].pid = pid;
-	close(sys->cmds[pos].fd[WRITE_END]);
-	if (pos > 0 && pos < sys->nbr_cmds)
-		close(sys->cmds[pos - 1].fd[READ_END]);
-	if (pos == sys->nbr_cmds - 1)
-		close(sys->cmds[pos].fd[READ_END]);
-	if (sys->cmds[pos].limiter)
-		close(sys->cmds[pos].fd_lim[READ_END]);
+	int	i;
+
+	if (pid == -1)
+		show_error(sys, "Error in fork");
+	if (pid == 0)
+	{
+		i = 0;
+		while (i < pos - 1)
+		{
+			close(sys->cmds[i].fd[WRITE_END]);
+			close(sys->cmds[i].fd[READ_END]);
+			i++;
+		}
+		run_child(sys, pos);
+	}
+	else
+	{
+		sys->cmds[pos].pid = pid;
+		if (sys->cmds[pos].limiter)
+			close(sys->cmds[pos].fd_lim[READ_END]);
+	}
 }
 
 void	run_commands(t_system *sys)
@@ -109,21 +121,22 @@ void	run_commands(t_system *sys)
 	if (!is_builtin_without_process(sys))
 	{
 		i = 0;
+		pid = 1;
 		while (i < sys->nbr_cmds && g_exec_child != 2)
 		{
 			run_limitator(sys, &sys->cmds[i]);
-			signal(SIGQUIT, ctrl_slash_signal);
-			find_path(sys, &sys->cmds[i]);
-			g_exec_child = 4;
-			pid = fork();
-			if (pid == -1)
-				show_error(sys, "Error in fork");
-			if (pid == 0)
-				run_child(sys, i);
-			else
-				close_fds(sys, i, pid);
+			if (g_exec_child != 2)
+			{
+				signal(SIGQUIT, ctrl_slash_signal);
+				pipe(sys->cmds[i].fd);
+				find_path(sys, &sys->cmds[i]);
+				g_exec_child = 4;
+				pid = fork();
+			}
+			select_process(sys, i, pid);
 			i++;
 		}
+		if (pid > 0)
+			wait_process(sys);
 	}
-	wait_process(sys);
 }

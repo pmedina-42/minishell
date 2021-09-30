@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/14 22:34:32 by pmedina-          #+#    #+#             */
-/*   Updated: 2021/09/20 20:24:50 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/09/28 18:14:11 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,14 @@ void	show_error(t_system *sys, char *str)
 	ft_putstr_fd(NAME, 2);
 	perror(str);
 	sys->error = 1;
+	sys->error_cmd = 1;
 }
 
 void	show_error_command(t_system *sys, char *resource)
 {
 	ft_putstr_fd(NAME, 2);
-	ft_putstr_fd("command not found: ", 2);
-	ft_putendl_fd(resource, 2);
+	ft_putstr_fd(resource, 2);
+	ft_putendl_fd(": command not found", 2);
 	sys->error_cmd = 127;
 	sys->error = 1;
 }

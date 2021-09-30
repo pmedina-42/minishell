@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: pmedina- <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/22 21:22:10 by pmedina-          #+#    #+#              #
-#    Updated: 2021/09/22 21:43:25 by pmedina-         ###   ########.fr        #
+#    Updated: 2021/09/27 16:39:42 by lgomez-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,7 @@ FILES = main \
 	exec_line \
 	run_commands \
 	run_utils \
+	wait_process \
 	utils \
 	replace_words \
 	builtins/builtins \
@@ -51,7 +52,7 @@ OBJS = ${SRCS:.c=.o}
 MFLAGS = -lreadline -L /Users/$(USER)/.brew/opt/readline/lib -I/Users/$(USER)/.brew/opt/readline/include -pthread
 
 ${NAME}:	${LIBFT} ${OBJS}
-	gcc -o ${NAME} ${OBJS} ${LIBFT} ${MFLAGS}
+	gcc ${CFLAGS} -o ${NAME} ${OBJS} ${LIBFT} ${MFLAGS}
 
 all: ${NAME}
 

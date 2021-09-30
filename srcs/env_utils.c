@@ -29,9 +29,9 @@ void	load_environment(t_system *sys, char **env)
 	}
 	else
 	{
-		s = get_value_env(sys, "SHLVL");
-		free(s);
-		s = ft_itoa(ft_atoi(s) + 1);
+		tmp = get_value_env(sys, "SHLVL");
+		s = ft_itoa(ft_atoi(tmp) + 1);
+		free(tmp);
 		tmp = ft_strjoin("SHLVL=", s);
 		free(s);
 		lst = get_node_env(sys, "SHLVL");

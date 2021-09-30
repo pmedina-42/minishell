@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/14 18:10:00 by pmedina-          #+#    #+#             */
-/*   Updated: 2021/09/20 18:56:57 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/09/28 16:30:37 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,15 @@ void	ctrl_c_signal(int i_signal)
 	else if (i_signal == SIGINT && g_exec_child == 1)
 	{
 		printf("\n");
-		exit(0);
+		exit(130);
 	}
 	else if (i_signal == SIGINT && g_exec_child >= 3)
 	{
 		printf("\n");
 		g_exec_child = 2;
 	}
+	else if (i_signal == SIGINT && g_exec_child == -2)
+		exit (1);
 }
 
 void	ctrl_slash_signal(int i_signal)

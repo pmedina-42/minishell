@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_builtin.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pmedina- <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/14 17:08:00 by pmedina-          #+#    #+#             */
-/*   Updated: 2021/09/22 21:17:43 by pmedina-         ###   ########.fr       */
+/*   Updated: 2021/09/28 15:55:46 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,8 @@ static void	no_arg_export(t_system *sys, int y)
 		if (ft_strchr(str, '=') != 0)
 			printf("\"");
 		printf("\n");
-		free(aux);
 		lst = lst->next;
+		free(aux);
 	}
 }
 

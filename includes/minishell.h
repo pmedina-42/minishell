@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/14 18:04:46 by pmedina-          #+#    #+#             */
-/*   Updated: 2021/09/16 20:44:17 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/09/28 18:02:40 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ void		run_commands(t_system *sys);
 int			jump_quotes(const char *str, int pos);
 void		find_files(t_system *sys, t_command *cmd);
 void		run_limitator(t_system *sys, t_command *cmd);
+void		read_limiter(t_system *sys, char *limiter);
 void		ctrl_c_signal(int i_signal);
 void		ctrl_slash_signal(int i_signal);
 t_list		*array_to_list(char **array);
@@ -124,4 +125,5 @@ void		wait_process(t_system *sys);
 char		**list_to_array_pars(t_list *lst);
 t_list		*split_argv(char *str, t_list *lst);
 int			pos_invalid_char(const char *str);
+void		show_error_files(t_system *sys, char *str);
 #endif

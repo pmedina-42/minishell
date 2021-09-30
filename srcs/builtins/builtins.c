@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pmedina- <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/13 21:45:33 by pmedina-          #+#    #+#             */
-/*   Updated: 2021/09/14 20:04:37 by pmedina-         ###   ########.fr       */
+/*   Updated: 2021/09/28 18:29:00 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,11 @@ int	is_builtin_without_process(t_system *sys)
 		if (cmd->builtin && cmd->builtin == builtin_unset)
 		{
 			builtin_unset(sys, 0);
+			return (1);
+		}
+		if (cmd->builtin && cmd->builtin == builtin_exit)
+		{
+			builtin_exit(sys, 0);
 			return (1);
 		}
 		if (check_cd_exit(cmd, sys) == 1)

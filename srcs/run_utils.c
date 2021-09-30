@@ -6,57 +6,11 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/14 18:11:33 by pmedina-          #+#    #+#             */
-/*   Updated: 2021/09/26 21:12:07 by pmedina-         ###   ########.fr       */
+/*   Updated: 2021/09/28 18:02:40 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-static t_command	*get_cmd(t_system *sys, int pid)
-{
-	int	i;
-
-	i = 0;
-	if (pid > 0)
-	{
-		while (i < sys->nbr_cmds)
-		{
-			if (sys->cmds[i].pid == pid)
-				return (&sys->cmds[i]);
-			i++;
-		}
-	}
-	return (0);
-}
-
-void	wait_process(t_system *sys)
-{
-	int			pid;
-	int			status;
-	t_command	*cmd;
-	extern int	g_exec_child;
-
-	pid = 1;
-	while (pid > 0)
-	{		
-		pid = waitpid(-1, &status, 0);
-		cmd = get_cmd(sys, pid);
-		if (cmd)
-		{
-			if (!cmd->nbr && !WIFEXITED(status) && !cmd->builtin && g_exec_child < 0)
-				printf("Quit: 3\n");
-			if (cmd->nbr == sys->nbr_cmds - 1)
-			{
-				if (WIFEXITED(status) && !sys->error)
-					sys->error_cmd = WEXITSTATUS(status);
-				else if (cmd->error && !sys->error_cmd)
-					sys->error_cmd = 1;
-				else if (!cmd->error)
-					sys->error_cmd = 0;
-			}
-		}
-	}
-}
 
 static void	redirect_io(t_command *cmd)
 {
@@ -105,10 +59,10 @@ void	run_limitator(t_system *sys, t_command *cmd)
 		pipe(cmd->fd_lim);
 		pid = fork();
 		if (pid == -1)
-			show_error(sys, "Error in fork");
+			show_error(sys, "command not found");
 		else if (pid == 0)
 		{
-			g_exec_child = 1;
+			g_exec_child = -2;
 			run_child(cmd);
 		}
 		else
@@ -116,6 +70,8 @@ void	run_limitator(t_system *sys, t_command *cmd)
 			close(cmd->fd_lim[WRITE_END]);
 			cmd->pid_limiter = pid;
 			waitpid(pid, &status, 0);
+			if (WIFEXITED(status))
+				sys->error_cmd = WEXITSTATUS(status);
 		}
 	}
 }

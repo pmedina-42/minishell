@@ -41,14 +41,14 @@ int	ft_atoi(const char *nptr)
 	nbr = 0;
 	sign = 1;
 	i = 0;
-	while ((nptr[i] >= '\t' && nptr[i] <= '\r') || nptr[i] == ' ')
+	while (nptr[i] && ((nptr[i] >= '\t' && nptr[i] <= '\r') || nptr[i] == ' '))
 		i++;
 	if (nptr[i] == '-' || nptr[i] == '+')
 	{
 		if (nptr[i++] == '-')
 			sign *= -1;
 	}
-	while (nptr[i] >= '0' && nptr[i] <= '9')
+	while (nptr[i] && nptr[i] >= '0' && nptr[i] <= '9')
 	{
 		out = ft_out_range(nbr, sign, nptr[i]);
 		if (out <= 0)

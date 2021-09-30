@@ -71,10 +71,11 @@ void	find_path(t_system *sys, t_command *cmd)
 
 void	add_path(t_system *sys, t_command *cmd)
 {
-	t_list	*lst;
+	t_list		*lst;
+	extern int	g_exec_child;
 
 	find_files(sys, cmd);
-	if (ft_strlen(cmd->pre_cmd))
+	if (ft_strlen(cmd->pre_cmd) && g_exec_child != 2)
 	{
 		lst = load_argv(cmd);
 		interpret_argv(sys, lst);

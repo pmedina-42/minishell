@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   simple_builtins.c                                  :+:      :+:    :+:   */
+/*   exit_builtin.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pmedina- <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/14 17:36:23 by pmedina-          #+#    #+#             */
-/*   Updated: 2021/09/22 21:10:21 by pmedina-         ###   ########.fr       */
+/*   Updated: 2021/09/28 18:55:18 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,10 @@ void	builtin_exit(void *data, int pos)
 
 	sys = (t_system *)data;
 	argv = sys->cmds[pos].argv;
-	printf("exit\n");
+	if (sys->nbr_cmds == 1 && !sys->cmds[pos].error)
+		printf("exit\n");
+	if (sys->nbr_cmds == 1 && sys->cmds[pos].error)
+		return ;
 	if (ft_array_len((void **)argv) >= 3)
 	{
 		if (!check_exit_argv(argv[1]))

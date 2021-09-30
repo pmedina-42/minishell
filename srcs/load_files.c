@@ -6,7 +6,7 @@
 /*   By: lgomez-d <lgomez-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/14 22:26:24 by pmedina-          #+#    #+#             */
-/*   Updated: 2021/09/20 17:43:22 by lgomez-d         ###   ########.fr       */
+/*   Updated: 2021/09/28 18:02:40 by lgomez-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,15 @@ int	jump_quotes(const char *str, int pos)
 	return (i);
 }
 
-static void	remove_and_load(t_system *sys, char **save_in, char *file)
+static void	remove_and_load(t_system *sys, char **save_in, char *file, int i)
 {
 	t_list	*lst;
 	char	**words;
+	char	*temp;
 
+	temp = sys->cmds[i].limiter;
+	if (*save_in && temp && !ft_strcmp(*save_in, temp))
+		read_limiter(sys, temp);
 	if (*save_in)
 		free(*save_in);
 	lst = 0;
@@ -57,18 +61,18 @@ static void	load_option(t_system *sys, char *file, char *opt, t_command *cmd)
 {
 	if (!ft_strcmp(opt, "<<"))
 	{
-		remove_and_load(sys, &cmd->limiter, file);
-		remove_and_load(sys, &cmd->file_in, 0);
+		remove_and_load(sys, &cmd->limiter, file, cmd->nbr);
+		remove_and_load(sys, &cmd->file_in, 0, cmd->nbr);
 	}
 	else if (!ft_strcmp(opt, ">>"))
 	{
-		remove_and_load(sys, &cmd->file_out, file);
+		remove_and_load(sys, &cmd->file_out, file, cmd->nbr);
 		cmd->to_append = 1;
 	}
 	else if (!ft_strcmp(opt, "<"))
-		remove_and_load(sys, &cmd->file_in, file);
+		remove_and_load(sys, &cmd->file_in, file, cmd->nbr);
 	else if (!ft_strcmp(opt, ">"))
-		remove_and_load(sys, &cmd->file_out, file);
+		remove_and_load(sys, &cmd->file_out, file, cmd->nbr);
 	if (ft_strchr(file, '<') || ft_strchr(file, '>'))
 	{
 		cmd->error = 1;
@@ -79,7 +83,6 @@ static void	load_option(t_system *sys, char *file, char *opt, t_command *cmd)
 			ft_putchar_fd('>', 2);
 		ft_putchar_fd('\n', 2);
 	}
-	check_files(sys, cmd);
 }
 
 void	load_file(t_system *sys, char *str, int pos, t_command *cmd)
@@ -124,6 +127,7 @@ void	find_files(t_system *sys, t_command *cmd)
 		if (temp[i] == '<' || temp[i] == '>')
 		{
 			load_file(sys, temp, i, cmd);
+			check_files(sys, cmd);
 			temp = cmd->pre_cmd;
 			i = 0;
 		}
